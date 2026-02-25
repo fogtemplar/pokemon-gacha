@@ -52,8 +52,28 @@
     .subtitle {
       color: var(--text-dim);
       font-size: 0.9rem;
-      margin-bottom: 50px;
+      margin-bottom: 12px;
     }
+
+    .data-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      margin-bottom: 40px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-dim);
+    }
+    .data-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--grass);
+      animation: pulse 2s infinite;
+    }
+    .data-badge.offline .dot { background: var(--fire); animation: none; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     /* === PACK SELECT === */
     .pack-grid {
@@ -121,6 +141,14 @@
       padding: 0 16px;
     }
 
+    .pack-price {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-top: 4px;
+    }
+
     /* === OPENING ANIMATION === */
     .opening-scene {
       position: relative;
@@ -156,7 +184,6 @@
       z-index: 2;
     }
 
-    /* Phase 1: Shake */
     .phase-shake {
       animation: packShake 0.15s ease-in-out infinite;
     }
@@ -167,7 +194,6 @@
       75% { transform: rotate(2deg); }
     }
 
-    /* Phase 2: Tear */
     .phase-tear::after {
       animation: tearLine 1.5s ease-out forwards;
     }
@@ -197,7 +223,6 @@
     .torn .pack-half-left { transform: translateX(-120%) rotate(-15deg); opacity: 0; }
     .torn .pack-half-right { transform: translateX(120%) rotate(15deg); opacity: 0; }
 
-    /* Phase 3: Light burst */
     .light-burst {
       position: absolute;
       top: 50%;
@@ -225,7 +250,6 @@
     .light-burst-ultra { background: radial-gradient(circle, rgba(168,85,247,0.7), transparent); }
     .light-burst-legendary { background: radial-gradient(circle, rgba(251,191,36,0.8), rgba(255,107,53,0.4), transparent); }
 
-    /* Progress bar */
     .progress-container {
       margin-top: 30px;
       width: 280px;
@@ -257,8 +281,8 @@
     /* === CARD REVEAL === */
     .card-scene {
       perspective: 1200px;
-      width: 300px;
-      height: 420px;
+      width: 320px;
+      height: 460px;
       margin: 0 auto;
     }
 
@@ -305,14 +329,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      padding: 16px;
+      border: 3px solid rgba(255,255,255,0.1);
     }
 
     .card-rarity-bar {
       width: 100%;
       height: 4px;
       border-radius: 2px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .rarity-common .card-rarity-bar { background: #9ca3af; }
@@ -320,7 +345,6 @@
     .rarity-ultra .card-rarity-bar { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
     .rarity-legendary .card-rarity-bar { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
 
-    .card-front { border: 3px solid rgba(255,255,255,0.1); }
     .rarity-common .card-front { border-color: rgba(156, 163, 175, 0.4); }
     .rarity-rare .card-front { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 0 30px rgba(59,130,246,0.3); }
     .rarity-ultra .card-front { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 0 30px rgba(168,85,247,0.3); }
@@ -330,92 +354,83 @@
     }
 
     .card-image-container {
-      width: 200px;
-      height: 200px;
+      width: 240px;
+      height: 240px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     .card-image-container img {
       max-width: 100%;
       max-height: 100%;
+      object-fit: contain;
       filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
     }
 
     .card-name {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
+      font-size: 0.85rem;
       font-weight: 700;
       margin-bottom: 6px;
-      text-transform: capitalize;
+      text-align: center;
+      line-height: 1.3;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
-    .card-id {
-      font-size: 0.7rem;
+    .card-year {
+      font-size: 0.65rem;
       color: var(--text-dim);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-family: 'Orbitron', sans-serif;
     }
 
-    .card-types {
+    .card-meta {
       display: flex;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .type-badge {
-      padding: 4px 14px;
+    .grade-badge {
+      padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
+      background: rgba(251,191,36,0.15);
+      color: var(--gold);
+      border: 1px solid rgba(251,191,36,0.3);
     }
 
-    .type-fire { background: rgba(255,107,53,0.2); color: var(--fire); border: 1px solid rgba(255,107,53,0.4); }
-    .type-water { background: rgba(59,130,246,0.2); color: var(--water); border: 1px solid rgba(59,130,246,0.4); }
-    .type-grass { background: rgba(34,197,94,0.2); color: var(--grass); border: 1px solid rgba(34,197,94,0.4); }
-    .type-electric { background: rgba(251,191,36,0.2); color: var(--gold); border: 1px solid rgba(251,191,36,0.4); }
-    .type-psychic { background: rgba(236,72,153,0.2); color: #ec4899; border: 1px solid rgba(236,72,153,0.4); }
-    .type-dragon { background: rgba(99,102,241,0.2); color: #6366f1; border: 1px solid rgba(99,102,241,0.4); }
-    .type-dark { background: rgba(100,80,60,0.3); color: #a78b6e; border: 1px solid rgba(100,80,60,0.5); }
-    .type-fairy { background: rgba(244,114,182,0.2); color: #f472b6; border: 1px solid rgba(244,114,182,0.4); }
-    .type-fighting { background: rgba(220,38,38,0.2); color: #ef4444; border: 1px solid rgba(220,38,38,0.4); }
-    .type-ghost { background: rgba(124,58,237,0.2); color: #7c3aed; border: 1px solid rgba(124,58,237,0.4); }
-    .type-ice { background: rgba(34,211,238,0.2); color: #22d3ee; border: 1px solid rgba(34,211,238,0.4); }
-    .type-normal { background: rgba(156,163,175,0.2); color: #9ca3af; border: 1px solid rgba(156,163,175,0.4); }
-    .type-poison { background: rgba(168,85,247,0.2); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
-    .type-ground { background: rgba(180,140,80,0.2); color: #d4a94e; border: 1px solid rgba(180,140,80,0.4); }
-    .type-rock { background: rgba(180,160,100,0.2); color: #b4a064; border: 1px solid rgba(180,160,100,0.4); }
-    .type-bug { background: rgba(132,204,22,0.2); color: #84cc16; border: 1px solid rgba(132,204,22,0.4); }
-    .type-flying { background: rgba(129,140,248,0.2); color: #818cf8; border: 1px solid rgba(129,140,248,0.4); }
-    .type-steel { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid rgba(148,163,184,0.4); }
+    .grade-badge.psa { background: rgba(220,38,38,0.15); color: #ef4444; border-color: rgba(220,38,38,0.3); }
+    .grade-badge.cgc { background: rgba(34,197,94,0.15); color: var(--grass); border-color: rgba(34,197,94,0.3); }
 
-    .card-stats {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
+    .price-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin: 6px 0;
     }
 
-    .stat-item {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      padding: 4px 8px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 6px;
-    }
-
-    .stat-label { color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-    .stat-val { font-weight: 700; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; }
+    .price-tag.common { color: #9ca3af; }
+    .price-tag.rare { color: var(--water); text-shadow: 0 0 10px rgba(59,130,246,0.4); }
+    .price-tag.ultra { color: var(--purple); text-shadow: 0 0 10px rgba(168,85,247,0.4); }
+    .price-tag.legendary { color: var(--gold); text-shadow: 0 0 15px rgba(251,191,36,0.5); }
 
     .rarity-label {
-      margin-top: 12px;
+      margin-top: 4px;
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -454,7 +469,7 @@
 
     /* === BUTTONS === */
     .btn {
-      margin-top: 30px;
+      margin-top: 24px;
       padding: 14px 40px;
       border: none;
       border-radius: 14px;
@@ -493,6 +508,29 @@
 
     .counter span { color: var(--gold); font-weight: 700; }
 
+    /* === LOADING === */
+    .loading-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 80px;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
     /* === BG EFFECTS === */
     .bg-glow {
       position: fixed;
@@ -508,15 +546,39 @@
     .bg-glow-1 { background: var(--purple); top: -200px; right: -200px; }
     .bg-glow-2 { background: var(--fire); bottom: -200px; left: -200px; }
 
+    /* === CARD POOL INDICATOR === */
+    .pool-info {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-bottom: 30px;
+    }
+    .pool-info span { color: var(--gold); font-weight: 700; }
+
+    /* === SOURCE LINK === */
+    .source-link {
+      margin-top: 8px;
+      font-size: 0.65rem;
+    }
+    .source-link a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--text-dim);
+      transition: color 0.2s;
+    }
+    .source-link a:hover { color: var(--text); }
+
     @media (max-width: 768px) {
       h1 { font-size: 1.6rem; }
       .pack-grid { gap: 14px; }
       .pack { width: 150px; height: 230px; }
       .pack-emoji { font-size: 3rem; }
+      .pack-price { font-size: 0.7rem; }
       .opening-scene { width: 240px; height: 340px; }
       .opening-pack { width: 240px; height: 340px; }
-      .card-scene { width: 260px; height: 370px; }
+      .card-scene { width: 280px; height: 420px; }
+      .card-image-container { width: 200px; height: 200px; }
       .progress-container { width: 240px; }
+      .price-tag { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -532,60 +594,34 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    const LEGENDARY_IDS = [
-      144,145,146,150,151,243,244,245,249,250,251,
-      377,378,379,380,381,382,383,384,385,386,
-      480,481,482,483,484,485,486,487,488,491,492,493,
-      638,639,640,641,642,643,644,645,646,647,648,649,
-      716,717,718,719,720,721,785,786,787,788,789,790,791,792,800
-    ];
-
-    const ULTRA_RARE_IDS = [
-      3,6,9,12,15,18,26,31,34,36,38,40,45,47,49,51,53,55,57,59,62,65,
-      68,71,73,76,78,80,82,83,85,87,89,91,94,95,97,99,101,103,105,106,
-      107,110,112,113,115,121,122,123,124,125,126,127,128,130,131,134,
-      135,136,137,139,141,142,143,149,248,282,289,306,330,334,348,350,
-      376,392,395,398,445,448,460,464,466,467,468,472,473,474,475,476,
-      477,530,553,567,571,579,584,589,596,612,623,625,628,635,637
-    ];
-
     const PACKS = [
-      { id: 'fire', emoji: '🔥', name: 'FIRE', desc: '불꽃 타입 확률 UP!', color: 'var(--fire)', types: ['fire','dragon'] },
-      { id: 'water', emoji: '🌊', name: 'WATER', desc: '물 타입 확률 UP!', color: 'var(--water)', types: ['water','ice'] },
-      { id: 'grass', emoji: '🌿', name: 'GRASS', desc: '풀 타입 확률 UP!', color: 'var(--grass)', types: ['grass','bug'] },
+      { id: 'fire', emoji: '🔥', name: 'FIRE', desc: '프리미엄 팩', color: 'var(--fire)' },
+      { id: 'water', emoji: '🌊', name: 'WATER', desc: '스탠다드 팩', color: 'var(--water)' },
+      { id: 'grass', emoji: '🌿', name: 'GRASS', desc: '빈티지 팩', color: 'var(--grass)' },
     ];
 
-    function getRarity() {
-      const r = Math.random();
-      if (r < 0.05) return 'legendary';
-      if (r < 0.15) return 'ultra';
-      if (r < 0.40) return 'rare';
+    function getRarityFromPrice(value) {
+      if (value >= 50) return 'legendary';
+      if (value >= 35) return 'ultra';
+      if (value >= 25) return 'rare';
       return 'common';
     }
 
-    function getRandomPokemonId(rarity) {
-      if (rarity === 'legendary') return LEGENDARY_IDS[Math.floor(Math.random() * LEGENDARY_IDS.length)];
-      if (rarity === 'ultra') return ULTRA_RARE_IDS[Math.floor(Math.random() * ULTRA_RARE_IDS.length)];
-      if (rarity === 'rare') {
-        // 2nd stage evolutions or mid-range pokemon
-        const ranges = [[2,2],[5,5],[8,8],[20,25],[33,36],[61,64],[67,70],[75,78],[117,119],[156,160],[230,240]];
-        const range = ranges[Math.floor(Math.random() * ranges.length)];
-        return range[0] + Math.floor(Math.random() * (range[1] - range[0] + 1));
-      }
-      // Common: random from gen 1-8, excluding legendary/ultra
-      let id;
-      do {
-        id = Math.floor(Math.random() * 800) + 1;
-      } while (LEGENDARY_IDS.includes(id) || ULTRA_RARE_IDS.includes(id));
-      return id;
-    }
+    const RARITY_LABELS = {
+      common: 'Common',
+      rare: 'Rare',
+      ultra: 'Ultra Rare',
+      legendary: 'Legendary',
+    };
 
     const App = () => {
-      const [phase, setPhase] = useState('select'); // select | opening | reveal
+      const [phase, setPhase] = useState('loading'); // loading | select | opening | reveal
+      const [cards, setCards] = useState([]);
+      const [dataSource, setDataSource] = useState('loading'); // loading | live | fallback
       const [selectedPack, setSelectedPack] = useState(null);
-      const [pokemon, setPokemon] = useState(null);
+      const [currentCard, setCurrentCard] = useState(null);
       const [rarity, setRarity] = useState('common');
-      const [openingPhase, setOpeningPhase] = useState(0); // 0=shake, 1=tear, 2=burst, 3=done
+      const [openingPhase, setOpeningPhase] = useState(0);
       const [progress, setProgress] = useState(0);
       const [flipped, setFlipped] = useState(false);
       const [totalOpened, setTotalOpened] = useState(() => {
@@ -593,42 +629,62 @@
       });
       const timerRef = useRef(null);
 
-      const openPack = async (pack) => {
+      // Fallback cards in case API fails
+      const FALLBACK_CARDS = [
+        { id: 'fb1', name: 'Charizard VMAX Rainbow', fullName: '2020 Pokemon Sword & Shield Champion\'s Path Charizard VMAX #74', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png', value: 55, grade: 'PSA 10', year: '2020' },
+        { id: 'fb2', name: 'Pikachu Illustrator Promo', fullName: '2023 Pokemon Japanese SV Promo Pikachu', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png', value: 42, grade: 'CGC 10', year: '2023' },
+        { id: 'fb3', name: 'Mewtwo GX Holo', fullName: '2019 Pokemon Sun & Moon Hidden Fates Mewtwo GX', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png', value: 35, grade: 'PSA 9', year: '2019' },
+        { id: 'fb4', name: 'Blastoise Base Set Holo', fullName: '1999 Pokemon Base Set Blastoise #2', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png', value: 48, grade: 'CGC 8.5', year: '1999' },
+        { id: 'fb5', name: 'Eevee Heroes Umbreon', fullName: '2021 Pokemon Japanese Eevee Heroes Umbreon VMAX', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/197.png', value: 38, grade: 'PSA 10', year: '2021' },
+        { id: 'fb6', name: 'Rayquaza VMAX Alt Art', fullName: '2022 Pokemon Evolving Skies Rayquaza VMAX', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/384.png', value: 52, grade: 'CGC 9.5', year: '2022' },
+        { id: 'fb7', name: 'Gengar VMAX', fullName: '2021 Pokemon Fusion Strike Gengar VMAX', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png', value: 28, grade: 'PSA 10', year: '2021' },
+        { id: 'fb8', name: 'Mew EX Holo', fullName: '2023 Pokemon Scarlet & Violet 151 Mew EX', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png', value: 22, grade: 'CGC 10', year: '2023' },
+        { id: 'fb9', name: 'Dragonite V', fullName: '2022 Pokemon Silver Tempest Dragonite V', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png', value: 18, grade: 'PSA 9', year: '2022' },
+        { id: 'fb10', name: 'Lugia V Alt Art', fullName: '2022 Pokemon Silver Tempest Lugia V', image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/249.png', value: 60, grade: 'PSA 10', year: '2022' },
+      ];
+
+      useEffect(() => {
+        let cancelled = false;
+        const fetchCards = async () => {
+          try {
+            const res = await fetch('/api/cards');
+            const data = await res.json();
+            if (!cancelled && data.success && data.cards.length > 0) {
+              setCards(data.cards);
+              setDataSource('live');
+            } else {
+              throw new Error('No cards');
+            }
+          } catch (e) {
+            console.warn('API fallback:', e);
+            if (!cancelled) {
+              setCards(FALLBACK_CARDS);
+              setDataSource('fallback');
+            }
+          }
+          if (!cancelled) setPhase('select');
+        };
+        fetchCards();
+        return () => { cancelled = true; };
+      }, []);
+
+      const pickRandomCard = () => {
+        if (cards.length === 0) return FALLBACK_CARDS[0];
+        return cards[Math.floor(Math.random() * cards.length)];
+      };
+
+      const openPack = (pack) => {
         setSelectedPack(pack);
         setPhase('opening');
         setOpeningPhase(0);
         setProgress(0);
         setFlipped(false);
-        setPokemon(null);
 
-        // Determine rarity & fetch pokemon
-        const r = getRarity();
+        const card = pickRandomCard();
+        const r = getRarityFromPrice(card.value);
+        setCurrentCard(card);
         setRarity(r);
-        const pokemonId = getRandomPokemonId(r);
 
-        try {
-          const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-          const data = await res.json();
-          setPokemon({
-            id: data.id,
-            name: data.name,
-            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
-            types: data.types.map(t => t.type.name),
-            stats: data.stats.map(s => ({ name: s.stat.name, value: s.base_stat })),
-          });
-        } catch (e) {
-          console.error('PokeAPI error:', e);
-          // Fallback
-          setPokemon({
-            id: pokemonId,
-            name: `pokemon-${pokemonId}`,
-            image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`,
-            types: ['normal'],
-            stats: [{ name: 'hp', value: 50 }, { name: 'attack', value: 50 }],
-          });
-        }
-
-        // Animation timeline
         let elapsed = 0;
         const totalMs = 5000;
         const interval = 50;
@@ -637,9 +693,9 @@
           elapsed += interval;
           setProgress(Math.min((elapsed / totalMs) * 100, 100));
 
-          if (elapsed >= 1000 && elapsed < 1050) setOpeningPhase(1); // tear
-          if (elapsed >= 3000 && elapsed < 3050) setOpeningPhase(2); // burst
-          if (elapsed >= 4200 && elapsed < 4250) setOpeningPhase(3); // fade
+          if (elapsed >= 1000 && elapsed < 1050) setOpeningPhase(1);
+          if (elapsed >= 3000 && elapsed < 3050) setOpeningPhase(2);
+          if (elapsed >= 4200 && elapsed < 4250) setOpeningPhase(3);
 
           if (elapsed >= totalMs) {
             clearInterval(timerRef.current);
@@ -658,23 +714,17 @@
         if (timerRef.current) clearInterval(timerRef.current);
         setPhase('select');
         setSelectedPack(null);
-        setPokemon(null);
+        setCurrentCard(null);
         setOpeningPhase(0);
         setProgress(0);
         setFlipped(false);
       };
 
-      const statLabel = (name) => {
-        const map = { hp: 'HP', attack: 'ATK', defense: 'DEF', 'special-attack': 'SP.ATK', 'special-defense': 'SP.DEF', speed: 'SPD' };
-        return map[name] || name.toUpperCase();
-      };
-
-      const rarityLabel = { common: 'Common', rare: 'Rare', ultra: 'Ultra Rare', legendary: 'Legendary' };
-      const rarityColor = {
-        common: 'var(--text-dim)',
-        rare: 'var(--water)',
-        ultra: 'var(--purple)',
-        legendary: 'var(--gold)'
+      const gradeClass = (grade) => {
+        if (!grade) return '';
+        if (grade.startsWith('PSA')) return 'psa';
+        if (grade.startsWith('CGC')) return 'cgc';
+        return '';
       };
 
       return (
@@ -684,22 +734,43 @@
           </div>
 
           <h1>POKEMON GACHA</h1>
-          <p className="subtitle">팩을 선택하면 랜덤 포켓몬 카드가 등장합니다</p>
+          <p className="subtitle">팩을 선택하면 실제 포켓몬 카드가 등장합니다</p>
+
+          <div className={`data-badge ${dataSource === 'fallback' ? 'offline' : ''}`}>
+            <div className="dot"></div>
+            {dataSource === 'loading' && '데이터 로딩중...'}
+            {dataSource === 'live' && `LIVE · Phygitals · ${cards.length}장`}
+            {dataSource === 'fallback' && 'OFFLINE · 샘플 데이터'}
+          </div>
+
+          {/* === LOADING === */}
+          {phase === 'loading' && (
+            <div className="loading-screen">
+              <div className="loading-spinner"></div>
+              <div className="loading-text">카드 데이터를 불러오는 중...</div>
+            </div>
+          )}
 
           {/* === PACK SELECT === */}
           {phase === 'select' && (
-            <div className="pack-grid">
-              {PACKS.map(pack => (
-                <div
-                  key={pack.id}
-                  className={`pack pack-${pack.id}`}
-                  onClick={() => openPack(pack)}
-                >
-                  <div className="pack-emoji">{pack.emoji}</div>
-                  <div className="pack-name">{pack.name}</div>
-                  <div className="pack-desc">{pack.desc}</div>
-                </div>
-              ))}
+            <div>
+              <div className="pack-grid">
+                {PACKS.map(pack => (
+                  <div
+                    key={pack.id}
+                    className={`pack pack-${pack.id}`}
+                    onClick={() => openPack(pack)}
+                  >
+                    <div className="pack-emoji">{pack.emoji}</div>
+                    <div className="pack-name">{pack.name}</div>
+                    <div className="pack-desc">{pack.desc}</div>
+                    <div className="pack-price">$25.00</div>
+                  </div>
+                ))}
+              </div>
+              <div className="pool-info">
+                카드 풀: <span>{cards.length}장</span> · 실제 PSA/CGC 그레이딩 카드
+              </div>
             </div>
           )}
 
@@ -715,14 +786,8 @@
                       <span className="pack-emoji">{selectedPack.emoji}</span>
                     ) : (
                       <React.Fragment>
-                        <div
-                          className={`pack-half-left pack-${selectedPack.id} ${openingPhase >= 2 ? 'torn' : ''}`}
-                          style={{ background: 'inherit' }}
-                        ></div>
-                        <div
-                          className={`pack-half-right pack-${selectedPack.id} ${openingPhase >= 2 ? 'torn' : ''}`}
-                          style={{ background: 'inherit' }}
-                        ></div>
+                        <div className={`pack-half-left pack-${selectedPack.id} ${openingPhase >= 2 ? 'torn' : ''}`} style={{ background: 'inherit' }}></div>
+                        <div className={`pack-half-right pack-${selectedPack.id} ${openingPhase >= 2 ? 'torn' : ''}`} style={{ background: 'inherit' }}></div>
                       </React.Fragment>
                     )}
                   </div>
@@ -735,10 +800,7 @@
                 <div className="progress-bar">
                   <div
                     className="progress-fill"
-                    style={{
-                      width: `${progress}%`,
-                      background: selectedPack.color
-                    }}
+                    style={{ width: `${progress}%`, background: selectedPack.color }}
                   ></div>
                 </div>
                 <div className="progress-text">
@@ -752,7 +814,7 @@
           )}
 
           {/* === CARD REVEAL === */}
-          {phase === 'reveal' && pokemon && (
+          {phase === 'reveal' && currentCard && (
             <div>
               <div className={`card-scene rarity-${rarity}`}>
                 <div className={`card-inner ${flipped ? 'flipped' : ''}`}>
@@ -762,25 +824,20 @@
                   <div className="card-face card-front">
                     <div className="card-rarity-bar"></div>
                     <div className="card-image-container">
-                      <img src={pokemon.image} alt={pokemon.name} />
+                      <img src={currentCard.image} alt={currentCard.name} crossOrigin="anonymous" />
                     </div>
-                    <div className="card-name">{pokemon.name}</div>
-                    <div className="card-id">#{String(pokemon.id).padStart(4, '0')}</div>
-                    <div className="card-types">
-                      {pokemon.types.map(type => (
-                        <span key={type} className={`type-badge type-${type}`}>{type}</span>
-                      ))}
+                    <div className="card-name">{currentCard.name}</div>
+                    {currentCard.year && <div className="card-year">{currentCard.year}</div>}
+                    <div className="card-meta">
+                      {currentCard.grade && (
+                        <span className={`grade-badge ${gradeClass(currentCard.grade)}`}>{currentCard.grade}</span>
+                      )}
                     </div>
-                    <div className="card-stats">
-                      {pokemon.stats.slice(0, 6).map(stat => (
-                        <div key={stat.name} className="stat-item">
-                          <span className="stat-label">{statLabel(stat.name)}</span>
-                          <span className="stat-val">{stat.value}</span>
-                        </div>
-                      ))}
+                    <div className={`price-tag ${rarity}`}>
+                      ${currentCard.value.toFixed(2)}
                     </div>
                     <div className={`rarity-label rarity-label-${rarity}`}>
-                      {rarityLabel[rarity]}
+                      {RARITY_LABELS[rarity]}
                     </div>
 
                     {rarity === 'legendary' && (
@@ -806,6 +863,12 @@
               <button className="btn btn-again" onClick={reset}>
                 🔄 다시 뽑기
               </button>
+
+              <div className="source-link">
+                <a href="https://www.phygitals.com" target="_blank" rel="noopener noreferrer">
+                  Card data from Phygitals.com
+                </a>
+              </div>
             </div>
           )}
         </div>
