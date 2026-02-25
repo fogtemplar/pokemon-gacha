@@ -1,5 +1,5 @@
-// Curated Pokemon card data from Phygitals.com
-// Real PSA/CGC graded cards with actual market prices
+// Curated Pokemon card data sourced from Phygitals.com
+// Real PSA/CGC graded cards with actual market prices and gateway.irys.xyz images
 const CARD_DATABASE = [
   {
     id: 'phyg-001',
@@ -12,8 +12,8 @@ const CARD_DATABASE = [
   },
   {
     id: 'phyg-002',
-    name: 'Time Gazer Gardenia\'s Vigor #78',
-    fullName: '2022 Pokemon Sword and Shield Time Gazer Japanese Gardenia\'s Vigor #78 PSA 10',
+    name: "Time Gazer Gardenia's Vigor #78",
+    fullName: "2022 Pokemon Sword and Shield Time Gazer Japanese Gardenia's Vigor #78 PSA 10",
     image: 'https://gateway.irys.xyz/D7qzFgEX7ywrFhqbFnmpd1cLHszWXNNiaBJmfGkYvT5W',
     value: 46.08,
     grade: 'PSA 10',
@@ -30,8 +30,8 @@ const CARD_DATABASE = [
   },
   {
     id: 'phyg-004',
-    name: 'Gym 2 Giovanni\'s Gyarados #130',
-    fullName: '1999 Pokemon Gym 2 Challenge From the Darkness Japanese Holo Giovanni\'s Gyarados #130 PSA 7',
+    name: "Gym 2 Giovanni's Gyarados #130",
+    fullName: "1999 Pokemon Gym 2 Challenge From the Darkness Japanese Holo Giovanni's Gyarados #130 PSA 7",
     image: 'https://gateway.irys.xyz/5q5dWtzpVXUhLWBmRcfJj3bNhqc5xsvcNmC8ajbeVCdR',
     value: 47.71,
     grade: 'PSA 7',
@@ -57,8 +57,8 @@ const CARD_DATABASE = [
   },
   {
     id: 'phyg-007',
-    name: 'Rocket Gang Mewtwo ex #39',
-    fullName: '2025 Pokemon Japanese SV Glory Of The Rocket Gang Holo Team Rocket\'s Mewtwo ex #39 CGC 10 GEM',
+    name: "Rocket Gang Mewtwo ex #39",
+    fullName: "2025 Pokemon Japanese SV Glory Of The Rocket Gang Holo Team Rocket's Mewtwo ex #39 CGC 10 GEM",
     image: 'https://gateway.irys.xyz/3pYmy4Mhf4uLdCxv95WRKPo5fmSX4ei2yKr41qe1segi',
     value: 22.46,
     grade: 'CGC 10 GEM',
@@ -87,7 +87,7 @@ const CARD_DATABASE = [
     name: 'Hidden Fates Frogadier-Holo #SV12',
     fullName: '2019 Pokemon Sun & Moon Hidden Fates #SV12 Frogadier-Holo PSA 10',
     image: 'https://gateway.irys.xyz/9hL8XXLkXYFhrHnSgAyYFiwMi9o4RDsi1ANMtCqKNQDv',
-    value: 33.21,
+    value: 28.23,
     grade: 'PSA 10',
     year: '2019',
   },
@@ -96,7 +96,7 @@ const CARD_DATABASE = [
     name: 'VMAX Climax Morpeko V-UNION #228',
     fullName: '2021 Pokemon Japanese Sword & Shield VMAX Climax CSR Morpeko V-UNION #228 CGC 10 PRISTINE',
     image: 'https://gateway.irys.xyz/DQsSBDRjR1j7msmiAsYGsKprhkyCU3ob4ZvVKSWEmRSr',
-    value: 39.50,
+    value: 33.57,
     grade: 'CGC 10 PRISTINE',
     year: '2021',
   },
@@ -136,6 +136,78 @@ const CARD_DATABASE = [
     grade: 'PSA 9',
     year: '2024',
   },
+  {
+    id: 'phyg-016',
+    name: "Rocket Gang Nidoking ex",
+    fullName: "2025 Pokemon Japanese SV Glory Of Rocket Gang Team Rocket's Nidoking ex CGC 10",
+    image: 'https://gateway.irys.xyz/3ajAe8y32TXV613mFxQGZR9Rpb2mFndRte6b32mxPiLa',
+    value: 17.24,
+    grade: 'CGC 10',
+    year: '2025',
+  },
+  {
+    id: 'phyg-017',
+    name: 'SV 151 Vaporeon #134',
+    fullName: '2023 Pokemon Japanese SV 151 Poke Ball Reverse Holo Vaporeon #134 CGC 10',
+    image: 'https://gateway.irys.xyz/A1hoJPKMS2zMLYmqKA4xeDS1M5rtXAMemrfdoojPz6nL',
+    value: 20.13,
+    grade: 'CGC 10',
+    year: '2023',
+  },
+  {
+    id: 'phyg-018',
+    name: 'Astral Radiance Wyrdeer V #134',
+    fullName: '2022 Pokemon Sword & Shield Astral Radiance Full Art Wyrdeer V #134 CGC 9.5 GEM MINT',
+    image: 'https://gateway.irys.xyz/2PX1HzRAZX1CDktSs5Dxs9D4xmr22hoEg3T3om2AZhVt',
+    value: 13.16,
+    grade: 'CGC 9.5 GEM',
+    year: '2022',
+  },
+  {
+    id: 'phyg-019',
+    name: 'Eevee Heroes Glaceon V #24',
+    fullName: '2021 Pokemon Japanese SWSH Eevee Heroes Full Art Glaceon V #24 CGC 10 GEM MINT',
+    image: 'https://gateway.irys.xyz/9XS3DhgiWGkeZrLMTNvK4jVbPvBdnSn99AKhrXS4V4n6',
+    value: 17.20,
+    grade: 'CGC 10 GEM',
+    year: '2021',
+  },
+  {
+    id: 'phyg-020',
+    name: 'XY Gaia Volcano Rhyperior #32',
+    fullName: '2014 Pokemon Japanese XY Gaia Volcano 1st Edition Holo Rhyperior #32 CGC 10 GEM',
+    image: 'https://gateway.irys.xyz/FNysXLwtcTehrdMgeY8gVuALr8VRLEi8vSkkRF5jhx8A',
+    value: 24.40,
+    grade: 'CGC 10 GEM',
+    year: '2014',
+  },
+  {
+    id: 'phyg-021',
+    name: 'Time Gazer Machamp VMAX #33',
+    fullName: '2022 Pokemon Japanese Sword & Shield Time Gazer Machamp VMAX #33 CGC 10 GEM MINT',
+    image: 'https://gateway.irys.xyz/wT1Z5NaQ4LnDtL71eFUtMUbMoX13SHCwK59f4f1d1BS',
+    value: 18.76,
+    grade: 'CGC 10 GEM',
+    year: '2022',
+  },
+  {
+    id: 'phyg-022',
+    name: 'VMAX Climax Charizard #17',
+    fullName: '2021 Pokemon Japanese SWSH VMAX Climax Holo Charizard #17 CGC 9 MINT',
+    image: 'https://gateway.irys.xyz/4pQzq8ScwxjG2Z5j3jtxNo8bdavuwmfLvmJig7ZrxPJ7',
+    value: 14.61,
+    grade: 'CGC 9 MINT',
+    year: '2021',
+  },
+  {
+    id: 'phyg-023',
+    name: 'Shiny Star V Ditto VMAX #324',
+    fullName: '2020 Pokemon Japanese SWSH Shiny Star V SSR Ditto VMAX #324 CGC 9 MINT',
+    image: 'https://gateway.irys.xyz/4zr7yRtC71edNqNjjTJ1JF6DGP2r3bNTdJiE3iHxwzZ9',
+    value: 17.01,
+    grade: 'CGC 9 MINT',
+    year: '2020',
+  },
 ];
 
 export default async function handler(req, res) {
@@ -160,9 +232,7 @@ export default async function handler(req, res) {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`Phygitals returned ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Phygitals returned ${response.status}`);
 
     const html = await response.text();
     const match = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
@@ -178,11 +248,11 @@ export default async function handler(req, res) {
       const image = item.metadata?.image || item.nft?.metadata?.image || '';
       const value = item.value || item.nft?.value || item.amount || 0;
       const id = item.public_id || item.id || item.universalNFTDataAddress || '';
-      const slug = item.slug || item.nft?.slug || '';
 
       if (!name.toUpperCase().includes('POKEMON')) return null;
-      if (seen.has(id)) return null;
-      seen.add(id);
+      if (!image) return null;
+      if (seen.has(image)) return null;
+      seen.add(image);
 
       let grade = '';
       const gradeMatch = name.match(/(PSA|CGC|BGS)\s*([\d.]+\s*\w*)/i);
@@ -197,13 +267,12 @@ export default async function handler(req, res) {
       displayName = displayName.replace(/^Pokemon\s+(Japanese\s+)?/i, '').trim();
 
       return {
-        id, slug, name: displayName, fullName: name, image,
+        id, name: displayName, fullName: name, image,
         value: typeof value === 'number' ? value : parseFloat(value) || 0,
         grade, year,
       };
     };
 
-    // Process all arrays in pageProps
     for (const key of Object.keys(pageProps)) {
       if (Array.isArray(pageProps[key])) {
         for (const item of pageProps[key]) {
@@ -220,12 +289,13 @@ export default async function handler(req, res) {
     console.warn('Live fetch failed, using curated database:', error.message);
   }
 
-  // Merge: live cards first, then fill with curated database (no duplicates)
+  // Merge: live cards first, then fill with curated database (no duplicates by image)
   const allCards = [...liveCards];
-  const liveImages = new Set(liveCards.map(c => c.image));
+  const usedImages = new Set(liveCards.map(c => c.image));
   for (const card of CARD_DATABASE) {
-    if (!liveImages.has(card.image)) {
+    if (!usedImages.has(card.image)) {
       allCards.push(card);
+      usedImages.add(card.image);
     }
   }
 
