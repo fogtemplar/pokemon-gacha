@@ -197,7 +197,7 @@
     .pack-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 48px;
     }
 
@@ -205,7 +205,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 20px 16px;
       cursor: pointer;
       transition: all 0.25s ease;
       position: relative;
@@ -214,25 +214,10 @@
     }
 
     .pack:hover {
-      border-color: var(--emerald);
       background: var(--bg-card-hover);
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(26,168,122,0.12);
+      box-shadow: 0 12px 40px rgba(255,255,255,0.05);
     }
-
-    .pack::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--emerald);
-      opacity: 0;
-      transition: opacity 0.25s;
-    }
-
-    .pack:hover::before { opacity: 1; }
 
     .pack-icon {
       width: 80px;
@@ -245,9 +230,12 @@
       font-size: 2.4rem;
     }
 
-    .pack-icon.fire { background: linear-gradient(135deg, #2d1200, #4a1e00); }
-    .pack-icon.water { background: linear-gradient(135deg, #001233, #002266); }
-    .pack-icon.grass { background: linear-gradient(135deg, #002d12, #004a1e); }
+    .pack-icon.rookie { background: linear-gradient(135deg, #1a1a2e, #2d2d44); }
+    .pack-icon.elite { background: linear-gradient(135deg, #001233, #002266); }
+    .pack-icon.sealed { background: linear-gradient(135deg, #1a0033, #2d0055); }
+    .pack-icon.legend { background: linear-gradient(135deg, #2d1a00, #4a2e00); }
+    .pack-icon.baseset { background: linear-gradient(135deg, #2d0000, #4a0000); }
+    .pack-icon.mythic { background: linear-gradient(135deg, #2d002d, #4a004a); }
 
     .pack-name {
       font-size: 0.95rem;
@@ -273,17 +261,11 @@
       font-weight: 700;
     }
 
-    .pack-rarity {
-      margin-top: 12px;
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .rarity-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    .pack-ev {
+      margin-top: 8px;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-weight: 500;
     }
 
     /* === OPENING ANIMATION === */
@@ -785,7 +767,7 @@
     /* === RESPONSIVE === */
     @media (max-width: 768px) {
       .hero h1 { font-size: 1.8rem; }
-      .pack-grid { grid-template-columns: 1fr; max-width: 360px; margin-left: auto; margin-right: auto; }
+      .pack-grid { grid-template-columns: repeat(2, 1fr); max-width: 400px; margin-left: auto; margin-right: auto; }
       .pack-icon { width: 60px; height: 60px; font-size: 1.8rem; border-radius: 12px; }
       .opening-scene { width: 220px; height: 320px; }
       .opening-pack { width: 220px; height: 320px; }
@@ -809,10 +791,26 @@
     const { useState, useEffect, useRef } = React;
 
     const PACKS = [
-      { id: 'fire', emoji: '🔥', name: 'Fire Pack', desc: '프리미엄 홀로 카드 확률 UP', price: 25 },
-      { id: 'water', emoji: '🌊', name: 'Water Pack', desc: '빈티지 & 프로모 확률 UP', price: 25 },
-      { id: 'grass', emoji: '🌿', name: 'Grass Pack', desc: 'Full Art 확률 UP', price: 25 },
+      { id: 'rookie', emoji: '⚡', name: 'Rookie Pack', desc: 'Common & Uncommon Holos', price: 25, min: 0, max: 30, color: '#9ca3af' },
+      { id: 'elite', emoji: '💎', name: 'Elite Pack', desc: 'Rare Holos & V Cards', price: 50, min: 15, max: 80, color: '#3b82f6' },
+      { id: 'sealed', emoji: '🔮', name: 'Sealed Pack', desc: 'VMAX & Ultra Rares', price: 100, min: 30, max: 250, color: '#a855f7' },
+      { id: 'legend', emoji: '👑', name: 'Legend Pack', desc: 'Secret & Alt Art Rares', price: 250, min: 80, max: 500, color: '#f59e0b' },
+      { id: 'baseset', emoji: '🏆', name: 'Base Set Pack', desc: 'Classic Vintage Holos', price: 500, min: 150, max: 1000, color: '#ef4444' },
+      { id: 'mythic', emoji: '🌟', name: 'Mythic Pack', desc: 'Holy Grails Only', price: 1000, min: 250, max: Infinity, color: '#ec4899' },
     ];
+
+    function getPackPool(pack, allCards) {
+      let pool = allCards.filter(c => c.value >= pack.min && c.value <= pack.max);
+      if (pool.length < 3) pool = allCards.filter(c => c.value >= pack.min * 0.5 && c.value <= pack.max * 1.5);
+      if (pool.length === 0) pool = allCards;
+      return pool;
+    }
+
+    function getPackEV(pack, allCards) {
+      const pool = getPackPool(pack, allCards);
+      if (pool.length === 0) return 0;
+      return pool.reduce((sum, c) => sum + c.value, 0) / pool.length;
+    }
 
     const RARITY_TIERS = [
       { key: 'common',   label: 'Common',   color: '#9ca3af', min: 0,   max: 15 },
@@ -897,7 +895,9 @@
         setProgress(0);
         setFlipped(false);
 
-        const card = cards[Math.floor(Math.random() * cards.length)];
+        const pool = getPackPool(pack, cards);
+
+        const card = pool[Math.floor(Math.random() * pool.length)];
         const r = getRarityFromPrice(card.value);
         setCurrentCard(card);
         setRarity(r);
@@ -1019,19 +1019,19 @@
 
                 <div className="section-title">Choose a Pack</div>
                 <div className="pack-grid">
-                  {PACKS.map(pack => (
-                    <div key={pack.id} className="pack" onClick={() => openPack(pack)}>
-                      <div className={`pack-icon ${pack.id}`}>{pack.emoji}</div>
-                      <div className="pack-name">{pack.name}</div>
-                      <div className="pack-desc">{pack.desc}</div>
-                      <div className="pack-price">${pack.price}.00</div>
-                      <div className="pack-rarity">
-                        {RARITY_TIERS.map(r => (
-                          <div key={r.key} className="rarity-dot" style={{ background: r.color }} title={r.label}></div>
-                        ))}
+                  {PACKS.map(pack => {
+                    const pool = getPackPool(pack, cards);
+                    const ev = getPackEV(pack, cards);
+                    return (
+                      <div key={pack.id} className="pack" onClick={() => openPack(pack)} style={{ borderColor: pool.length > 0 ? undefined : 'rgba(255,0,0,0.2)' }}>
+                        <div className={`pack-icon ${pack.id}`}>{pack.emoji}</div>
+                        <div className="pack-name">{pack.name}</div>
+                        <div className="pack-desc">{pack.desc}</div>
+                        <div className="pack-price" style={{ color: pack.color }}>${pack.price.toLocaleString()}</div>
+                        <div className="pack-ev">EV ${ev.toFixed(2)} · {pool.length} cards</div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Recent Pulls */}
@@ -1085,7 +1085,7 @@
 
                 <div className="progress-container">
                   <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                    <div className="progress-fill" style={{ width: `${progress}%`, background: selectedPack.color }}></div>
                   </div>
                   <div className="progress-text">
                     {openingPhase === 0 && 'Opening...'}
