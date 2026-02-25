@@ -617,7 +617,7 @@
     const App = () => {
       const [phase, setPhase] = useState('loading'); // loading | select | opening | reveal
       const [cards, setCards] = useState([]);
-      const [dataSource, setDataSource] = useState('loading'); // loading | live | fallback
+      const [dataSource, setDataSource] = useState('loading'); // loading | live | mixed | fallback
       const [selectedPack, setSelectedPack] = useState(null);
       const [currentCard, setCurrentCard] = useState(null);
       const [rarity, setRarity] = useState('common');
@@ -651,7 +651,7 @@
             const data = await res.json();
             if (!cancelled && data.success && data.cards.length > 0) {
               setCards(data.cards);
-              setDataSource('live');
+              setDataSource(data.live > 0 ? 'live' : 'curated');
             } else {
               throw new Error('No cards');
             }
@@ -740,6 +740,7 @@
             <div className="dot"></div>
             {dataSource === 'loading' && '데이터 로딩중...'}
             {dataSource === 'live' && `LIVE · Phygitals · ${cards.length}장`}
+            {dataSource === 'curated' && `Phygitals · ${cards.length}장`}
             {dataSource === 'fallback' && 'OFFLINE · 샘플 데이터'}
           </div>
 
