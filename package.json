@@ -1,0 +1,8 @@
+{
+  "name": "pokemon-gacha",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static site, no build needed'"
+  },
+  "dependencies": {}
+}

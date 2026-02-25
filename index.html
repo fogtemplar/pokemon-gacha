@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon Card Gacha</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎴</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0b0d1a;
+      --bg-card: #151830;
+      --fire: #ff6b35;
+      --water: #3b82f6;
+      --grass: #22c55e;
+      --gold: #fbbf24;
+      --purple: #a855f7;
+      --text: #e2e8f0;
+      --text-dim: #64748b;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), var(--fire), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      margin-bottom: 50px;
+    }
+
+    /* === PACK SELECT === */
+    .pack-grid {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .pack {
+      width: 200px;
+      height: 300px;
+      border-radius: 18px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .pack:hover {
+      transform: translateY(-12px) scale(1.03);
+    }
+
+    .pack-fire {
+      background: linear-gradient(160deg, #1a0a00, #3d1200, #6b2000);
+      border: 2px solid rgba(255, 107, 53, 0.4);
+      box-shadow: 0 8px 40px rgba(255, 107, 53, 0.2);
+    }
+    .pack-fire:hover { box-shadow: 0 20px 60px rgba(255, 107, 53, 0.5); }
+
+    .pack-water {
+      background: linear-gradient(160deg, #000a1a, #001233, #002266);
+      border: 2px solid rgba(59, 130, 246, 0.4);
+      box-shadow: 0 8px 40px rgba(59, 130, 246, 0.2);
+    }
+    .pack-water:hover { box-shadow: 0 20px 60px rgba(59, 130, 246, 0.5); }
+
+    .pack-grass {
+      background: linear-gradient(160deg, #001a0a, #003d12, #006b20);
+      border: 2px solid rgba(34, 197, 94, 0.4);
+      box-shadow: 0 8px 40px rgba(34, 197, 94, 0.2);
+    }
+    .pack-grass:hover { box-shadow: 0 20px 60px rgba(34, 197, 94, 0.5); }
+
+    .pack-emoji { font-size: 4rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); }
+    .pack-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .pack-fire .pack-name { color: var(--fire); }
+    .pack-water .pack-name { color: var(--water); }
+    .pack-grass .pack-name { color: var(--grass); }
+
+    .pack-desc {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      padding: 0 16px;
+    }
+
+    /* === OPENING ANIMATION === */
+    .opening-scene {
+      position: relative;
+      width: 280px;
+      height: 400px;
+      margin: 0 auto;
+    }
+
+    .opening-pack {
+      width: 280px;
+      height: 400px;
+      border-radius: 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      overflow: hidden;
+    }
+
+    .opening-pack::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 4px;
+      height: 100%;
+      background: white;
+      transform: translateX(-50%) scaleY(0);
+      box-shadow: 0 0 30px white, 0 0 60px white;
+      z-index: 2;
+    }
+
+    /* Phase 1: Shake */
+    .phase-shake {
+      animation: packShake 0.15s ease-in-out infinite;
+    }
+
+    @keyframes packShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-2deg); }
+      75% { transform: rotate(2deg); }
+    }
+
+    /* Phase 2: Tear */
+    .phase-tear::after {
+      animation: tearLine 1.5s ease-out forwards;
+    }
+
+    @keyframes tearLine {
+      0% { transform: translateX(-50%) scaleY(0); opacity: 0; }
+      50% { transform: translateX(-50%) scaleY(1); opacity: 1; }
+      100% { transform: translateX(-50%) scaleY(1); opacity: 1; width: 20px; }
+    }
+
+    .pack-half-left, .pack-half-right {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      transition: transform 1s ease-in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .pack-half-left { left: 0; border-radius: 20px 0 0 20px; }
+    .pack-half-right { right: 0; border-radius: 0 20px 20px 0; }
+
+    .torn .pack-half-left { transform: translateX(-120%) rotate(-15deg); opacity: 0; }
+    .torn .pack-half-right { transform: translateX(120%) rotate(15deg); opacity: 0; }
+
+    /* Phase 3: Light burst */
+    .light-burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .light-burst.active {
+      animation: burstExpand 1.2s ease-out forwards;
+    }
+
+    @keyframes burstExpand {
+      0% { width: 0; height: 0; opacity: 1; }
+      60% { width: 500px; height: 500px; opacity: 0.8; }
+      100% { width: 800px; height: 800px; opacity: 0; }
+    }
+
+    .light-burst-common { background: radial-gradient(circle, rgba(200,200,200,0.6), transparent); }
+    .light-burst-rare { background: radial-gradient(circle, rgba(59,130,246,0.7), transparent); }
+    .light-burst-ultra { background: radial-gradient(circle, rgba(168,85,247,0.7), transparent); }
+    .light-burst-legendary { background: radial-gradient(circle, rgba(251,191,36,0.8), rgba(255,107,53,0.4), transparent); }
+
+    /* Progress bar */
+    .progress-container {
+      margin-top: 30px;
+      width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.1s linear;
+    }
+
+    .progress-text {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* === CARD REVEAL === */
+    .card-scene {
+      perspective: 1200px;
+      width: 300px;
+      height: 420px;
+      margin: 0 auto;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+    }
+
+    .card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #1a1a3e, #2d1b69);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid rgba(168, 85, 247, 0.5);
+    }
+
+    .card-back-pattern {
+      font-size: 5rem;
+      opacity: 0.4;
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .card-front {
+      transform: rotateY(180deg);
+      background: var(--bg-card);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card-rarity-bar {
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      margin-bottom: 12px;
+    }
+
+    .rarity-common .card-rarity-bar { background: #9ca3af; }
+    .rarity-rare .card-rarity-bar { background: var(--water); box-shadow: 0 0 10px var(--water); }
+    .rarity-ultra .card-rarity-bar { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+    .rarity-legendary .card-rarity-bar { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
+
+    .card-front { border: 3px solid rgba(255,255,255,0.1); }
+    .rarity-common .card-front { border-color: rgba(156, 163, 175, 0.4); }
+    .rarity-rare .card-front { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 0 30px rgba(59,130,246,0.3); }
+    .rarity-ultra .card-front { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 0 30px rgba(168,85,247,0.3); }
+    .rarity-legendary .card-front {
+      border-color: rgba(251, 191, 36, 0.6);
+      box-shadow: 0 0 40px rgba(251,191,36,0.4), 0 0 80px rgba(255,107,53,0.2);
+    }
+
+    .card-image-container {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .card-image-container img {
+      max-width: 100%;
+      max-height: 100%;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    .card-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: capitalize;
+    }
+
+    .card-id {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .card-types {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .type-badge {
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .type-fire { background: rgba(255,107,53,0.2); color: var(--fire); border: 1px solid rgba(255,107,53,0.4); }
+    .type-water { background: rgba(59,130,246,0.2); color: var(--water); border: 1px solid rgba(59,130,246,0.4); }
+    .type-grass { background: rgba(34,197,94,0.2); color: var(--grass); border: 1px solid rgba(34,197,94,0.4); }
+    .type-electric { background: rgba(251,191,36,0.2); color: var(--gold); border: 1px solid rgba(251,191,36,0.4); }
+    .type-psychic { background: rgba(236,72,153,0.2); color: #ec4899; border: 1px solid rgba(236,72,153,0.4); }
+    .type-dragon { background: rgba(99,102,241,0.2); color: #6366f1; border: 1px solid rgba(99,102,241,0.4); }
+    .type-dark { background: rgba(100,80,60,0.3); color: #a78b6e; border: 1px solid rgba(100,80,60,0.5); }
+    .type-fairy { background: rgba(244,114,182,0.2); color: #f472b6; border: 1px solid rgba(244,114,182,0.4); }
+    .type-fighting { background: rgba(220,38,38,0.2); color: #ef4444; border: 1px solid rgba(220,38,38,0.4); }
+    .type-ghost { background: rgba(124,58,237,0.2); color: #7c3aed; border: 1px solid rgba(124,58,237,0.4); }
+    .type-ice { background: rgba(34,211,238,0.2); color: #22d3ee; border: 1px solid rgba(34,211,238,0.4); }
+    .type-normal { background: rgba(156,163,175,0.2); color: #9ca3af; border: 1px solid rgba(156,163,175,0.4); }
+    .type-poison { background: rgba(168,85,247,0.2); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
+    .type-ground { background: rgba(180,140,80,0.2); color: #d4a94e; border: 1px solid rgba(180,140,80,0.4); }
+    .type-rock { background: rgba(180,160,100,0.2); color: #b4a064; border: 1px solid rgba(180,160,100,0.4); }
+    .type-bug { background: rgba(132,204,22,0.2); color: #84cc16; border: 1px solid rgba(132,204,22,0.4); }
+    .type-flying { background: rgba(129,140,248,0.2); color: #818cf8; border: 1px solid rgba(129,140,248,0.4); }
+    .type-steel { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid rgba(148,163,184,0.4); }
+
+    .card-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      padding: 4px 8px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+    }
+
+    .stat-label { color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+    .stat-val { font-weight: 700; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; }
+
+    .rarity-label {
+      margin-top: 12px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .rarity-label-common { color: #9ca3af; }
+    .rarity-label-rare { color: var(--water); text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+    .rarity-label-ultra { color: var(--purple); text-shadow: 0 0 10px rgba(168,85,247,0.5); }
+    .rarity-label-legendary { color: var(--gold); text-shadow: 0 0 15px rgba(251,191,36,0.6); }
+
+    /* Legendary sparkle */
+    .sparkle-container {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--gold);
+      animation: sparkleFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkleFloat {
+      0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+      50% { opacity: 1; transform: translateY(-30px) scale(1); }
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      margin-top: 30px;
+      padding: 14px 40px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+    }
+
+    .btn-again {
+      background: linear-gradient(135deg, var(--purple), var(--water));
+      box-shadow: 0 4px 20px rgba(168,85,247,0.3);
+    }
+
+    .btn-again:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(168,85,247,0.5);
+    }
+
+    /* === COLLECTION COUNTER === */
+    .counter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-card);
+      padding: 10px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      z-index: 10;
+    }
+
+    .counter span { color: var(--gold); font-weight: 700; }
+
+    /* === BG EFFECTS === */
+    .bg-glow {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow-1 { background: var(--purple); top: -200px; right: -200px; }
+    .bg-glow-2 { background: var(--fire); bottom: -200px; left: -200px; }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.6rem; }
+      .pack-grid { gap: 14px; }
+      .pack { width: 150px; height: 230px; }
+      .pack-emoji { font-size: 3rem; }
+      .opening-scene { width: 240px; height: 340px; }
+      .opening-pack { width: 240px; height: 340px; }
+      .card-scene { width: 260px; height: 370px; }
+      .progress-container { width: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const LEGENDARY_IDS = [
+      144,145,146,150,151,243,244,245,249,250,251,
+      377,378,379,380,381,382,383,384,385,386,
+      480,481,482,483,484,485,486,487,488,491,492,493,
+      638,639,640,641,642,643,644,645,646,647,648,649,
+      716,717,718,719,720,721,785,786,787,788,789,790,791,792,800
+    ];
+
+    const ULTRA_RARE_IDS = [
+      3,6,9,12,15,18,26,31,34,36,38,40,45,47,49,51,53,55,57,59,62,65,
+      68,71,73,76,78,80,82,83,85,87,89,91,94,95,97,99,101,103,105,106,
+      107,110,112,113,115,121,122,123,124,125,126,127,128,130,131,134,
+      135,136,137,139,141,142,143,149,248,282,289,306,330,334,348,350,
+      376,392,395,398,445,448,460,464,466,467,468,472,473,474,475,476,
+      477,530,553,567,571,579,584,589,596,612,623,625,628,635,637
+    ];
+
+    const PACKS = [
+      { id: 'fire', emoji: '🔥', name: 'FIRE', desc: '불꽃 타입 확률 UP!', color: 'var(--fire)', types: ['fire','dragon'] },
+      { id: 'water', emoji: '🌊', name: 'WATER', desc: '물 타입 확률 UP!', color: 'var(--water)', types: ['water','ice'] },
+      { id: 'grass', emoji: '🌿', name: 'GRASS', desc: '풀 타입 확률 UP!', color: 'var(--grass)', types: ['grass','bug'] },
+    ];
+
+    function getRarity() {
+      const r = Math.random();
+      if (r < 0.05) return 'legendary';
+      if (r < 0.15) return 'ultra';
+      if (r < 0.40) return 'rare';
+      return 'common';
+    }
+
+    function getRandomPokemonId(rarity) {
+      if (rarity === 'legendary') return LEGENDARY_IDS[Math.floor(Math.random() * LEGENDARY_IDS.length)];
+      if (rarity === 'ultra') return ULTRA_RARE_IDS[Math.floor(Math.random() * ULTRA_RARE_IDS.length)];
+      if (rarity === 'rare') {
+        // 2nd stage evolutions or mid-range pokemon
+        const ranges = [[2,2],[5,5],[8,8],[20,25],[33,36],[61,64],[67,70],[75,78],[117,119],[156,160],[230,240]];
+        const range = ranges[Math.floor(Math.random() * ranges.length)];
+        return range[0] + Math.floor(Math.random() * (range[1] - range[0] + 1));
+      }
+      // Common: random from gen 1-8, excluding legendary/ultra
+      let id;
+      do {
+        id = Math.floor(Math.random() * 800) + 1;
+      } while (LEGENDARY_IDS.includes(id) || ULTRA_RARE_IDS.includes(id));
+      return id;
+    }
+
+    const App = () => {
+      const [phase, setPhase] = useState('select'); // select | opening | reveal
+      const [selectedPack, setSelectedPack] = useState(null);
+      const [pokemon, setPokemon] = useState(null);
+      const [rarity, setRarity] = useState('common');
+      const [openingPhase, setOpeningPhase] = useState(0); // 0=shake, 1=tear, 2=burst, 3=done
+      const [progress, setProgress] = useState(0);
+      const [flipped, setFlipped] = useState(false);
+      const [totalOpened, setTotalOpened] = useState(() => {
+        try { return parseInt(localStorage.getItem('pokemon-gacha-count') || '0'); } catch { return 0; }
+      });
+      const timerRef = useRef(null);
+
+      const openPack = async (pack) => {
+        setSelectedPack(pack);
+        setPhase('opening');
+        setOpeningPhase(0);
+        setProgress(0);
+        setFlipped(false);
+        setPokemon(null);
+
+        // Determine rarity & fetch pokemon
+        const r = getRarity();
+        setRarity(r);
+        const pokemonId = getRandomPokemonId(r);
+
+        try {
+          const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+          const data = await res.json();
+          setPokemon({
+            id: data.id,
+            name: data.name,
+            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+            types: data.types.map(t => t.type.name),
+            stats: data.stats.map(s => ({ name: s.stat.name, value: s.base_stat })),
+          });
+        } catch (e) {
+          console.error('PokeAPI error:', e);
+          // Fallback
+          setPokemon({
+            id: pokemonId,
+            name: `pokemon-${pokemonId}`,
+            image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`,
+            types: ['normal'],
+            stats: [{ name: 'hp', value: 50 }, { name: 'attack', value: 50 }],
+          });
+        }
+
+        // Animation timeline
+        let elapsed = 0;
+        const totalMs = 5000;
+        const interval = 50;
+
+        timerRef.current = setInterval(() => {
+          elapsed += interval;
+          setProgress(Math.min((elapsed / totalMs) * 100, 100));
+
+          if (elapsed >= 1000 && elapsed < 1050) setOpeningPhase(1); // tear
+          if (elapsed >= 3000 && elapsed < 3050) setOpeningPhase(2); // burst
+          if (elapsed >= 4200 && elapsed < 4250) setOpeningPhase(3); // fade
+
+          if (elapsed >= totalMs) {
+            clearInterval(timerRef.current);
+            setPhase('reveal');
+            setTimeout(() => setFlipped(true), 300);
+            setTotalOpened(prev => {
+              const next = prev + 1;
+              try { localStorage.setItem('pokemon-gacha-count', String(next)); } catch {}
+              return next;
+            });
+          }
+        }, interval);
+      };
+
+      const reset = () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+        setPhase('select');
+        setSelectedPack(null);
+        setPokemon(null);
+        setOpeningPhase(0);
+        setProgress(0);
+        setFlipped(false);
+      };
+
+      const statLabel = (name) => {
+        const map = { hp: 'HP', attack: 'ATK', defense: 'DEF', 'special-attack': 'SP.ATK', 'special-defense': 'SP.DEF', speed: 'SPD' };
+        return map[name] || name.toUpperCase();
+      };
+
+      const rarityLabel = { common: 'Common', rare: 'Rare', ultra: 'Ultra Rare', legendary: 'Legendary' };
+      const rarityColor = {
+        common: 'var(--text-dim)',
+        rare: 'var(--water)',
+        ultra: 'var(--purple)',
+        legendary: 'var(--gold)'
+      };
+
+      return (
+        <div className="app">
+          <div className="counter">
+            OPENED: <span>{totalOpened}</span>
+          </div>
+
+          <h1>POKEMON GACHA</h1>
+          <p className="subtitle">팩을 선택하면 랜덤 포켓몬 카드가 등장합니다</p>
+
+          {/* === PACK SELECT === */}
+          {phase === 'select' && (
+            <div className="pack-grid">
+              {PACKS.map(pack => (
+                <div
+                  key={pack.id}
+                  className={`pack pack-${pack.id}`}
+                  onClick={() => openPack(pack)}
+                >
+                  <div className="pack-emoji">{pack.emoji}</div>
+                  <div className="pack-name">{pack.name}</div>
+                  <div className="pack-desc">{pack.desc}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* === OPENING === */}
+          {phase === 'opening' && selectedPack && (
+            <div>
+              <div className="opening-scene">
+                {openingPhase < 3 ? (
+                  <div
+                    className={`opening-pack pack-${selectedPack.id} ${openingPhase === 0 ? 'phase-shake' : ''} ${openingPhase >= 1 ? 'phase-tear' : ''}`}
+                  >
+                    {openingPhase < 2 ? (
+                      <span className="pack-emoji">{selectedPack.emoji}</span>
+                    ) : (
+                      <React.Fragment>
+                        <div
+                          className={`pack-half-left pack-${selectedPack.id} ${openingPhase >= 2 ? 'torn' : ''}`}
+                          style={{ background: 'inherit' }}
+                        ></div>
+                        <div
+                          className={`pack-half-right pack-${selectedPack.id} ${openingPhase >= 2 ? 'torn' : ''}`}
+                          style={{ background: 'inherit' }}
+                        ></div>
+                      </React.Fragment>
+                    )}
+                  </div>
+                ) : null}
+
+                <div className={`light-burst light-burst-${rarity} ${openingPhase >= 2 ? 'active' : ''}`}></div>
+              </div>
+
+              <div className="progress-container">
+                <div className="progress-bar">
+                  <div
+                    className="progress-fill"
+                    style={{
+                      width: `${progress}%`,
+                      background: selectedPack.color
+                    }}
+                  ></div>
+                </div>
+                <div className="progress-text">
+                  {openingPhase === 0 && 'OPENING...'}
+                  {openingPhase === 1 && 'TEARING...'}
+                  {openingPhase === 2 && 'REVEALING...'}
+                  {openingPhase === 3 && 'GET READY!'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* === CARD REVEAL === */}
+          {phase === 'reveal' && pokemon && (
+            <div>
+              <div className={`card-scene rarity-${rarity}`}>
+                <div className={`card-inner ${flipped ? 'flipped' : ''}`}>
+                  <div className="card-face card-back">
+                    <div className="card-back-pattern">🎴</div>
+                  </div>
+                  <div className="card-face card-front">
+                    <div className="card-rarity-bar"></div>
+                    <div className="card-image-container">
+                      <img src={pokemon.image} alt={pokemon.name} />
+                    </div>
+                    <div className="card-name">{pokemon.name}</div>
+                    <div className="card-id">#{String(pokemon.id).padStart(4, '0')}</div>
+                    <div className="card-types">
+                      {pokemon.types.map(type => (
+                        <span key={type} className={`type-badge type-${type}`}>{type}</span>
+                      ))}
+                    </div>
+                    <div className="card-stats">
+                      {pokemon.stats.slice(0, 6).map(stat => (
+                        <div key={stat.name} className="stat-item">
+                          <span className="stat-label">{statLabel(stat.name)}</span>
+                          <span className="stat-val">{stat.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className={`rarity-label rarity-label-${rarity}`}>
+                      {rarityLabel[rarity]}
+                    </div>
+
+                    {rarity === 'legendary' && (
+                      <div className="sparkle-container">
+                        {Array.from({ length: 12 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="sparkle"
+                            style={{
+                              left: `${Math.random() * 100}%`,
+                              top: `${Math.random() * 100}%`,
+                              animationDelay: `${Math.random() * 2}s`,
+                              animationDuration: `${1.5 + Math.random()}s`,
+                            }}
+                          ></div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <button className="btn btn-again" onClick={reset}>
+                🔄 다시 뽑기
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
